@@ -4,7 +4,7 @@ We are Team Anokha from Greenway Modern School, Dilshad Garden Delhi-95. We are 
 
 The topic we chose is Energy & Transport and our project is about traffic management using AI. The programming languages we chose is python because of its interpreter-type console and libraries for vehicle detection.
 
-It took us around 40 days to generate an idea and we spent 14 days to make it. It was not possible without the help of our respected teachers and the cooperation with our team members.
+It took us around 40 days to generate an idea and we spent 14 days to make it. It was not possible without the help of our respected teachers and the cooperation with our team members
 
 Our idea was to create a traffic light which could detect vehicles around the lane so that there will be no wastage of time and no accidents will happen. It was difficult but we managed to do that.
 
