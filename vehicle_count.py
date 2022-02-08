@@ -1,8 +1,11 @@
 # *** IMAGE XY COOD IS TOP LEFT
+from multiprocessing.sharedctypes import Value
 import random
 import math
 import time
 import threading
+# from turtle import speed
+from pygame import mixer
 # from vehicle_detection import detection
 import pygame
 import sys
@@ -20,7 +23,7 @@ import os
 defaultRed = 150
 defaultYellow = 5
 defaultGreen = 20
-defaultMinimum = 10
+defaultMinimum = 2
 defaultMaximum = 180
 
 signals = []
@@ -33,24 +36,28 @@ nextGreen = (currentGreen+1)%noOfSignals
 currentYellow = 0   # Indicates whether yellow signal is on or off 
 
 # Average times for vehicles to pass the intersection
-carTime = 2.5
-bikeTime = 1
-rickshawTime = 3
-busTime = 2
-truckTime = 5
+
+carTime = 4
+bikeTime = 6
+rickshawTime = 4
+busTime = 3
+truckTime = 3
 
 # Count of cars at a traffic signal
 noOfCars = 0
 noOfBikes = 0
-noOfBuses =0
+noOfBuses = 0
 noOfTrucks = 0
 noOfRickshaws = 0
 noOfLanes = 2
 
+traffic_level = 0
+
+
 # Red signal time at which cars will be detected at a signal
 detectionTime = 5
 
-speeds = {'car':2.25, 'bus':1.8, 'truck':1.8, 'rickshaw':2, 'bike':2.5}  # average speeds of vehicles
+speeds = {'car': carTime+1, 'bus': busTime+1, 'truck': truckTime+1, 'rickshaw': rickshawTime+1, 'bike': bikeTime+1}  # average speeds of vehicles
 
 # Coordinates of start
 x = {'right':[0,0,0], 'down':[755,727,697], 'left':[1400,1400,1400], 'up':[602,627,657]}    
@@ -112,7 +119,6 @@ class Vehicle(pygame.sprite.Sprite):
         self.originalImage = pygame.image.load(path)
         self.currentImage = pygame.image.load(path)
 
-    
         if(direction=='right'):
             if(len(vehicles[direction][lane])>1 and vehicles[direction][lane][self.index-1].crossed==0):    # if more than 1 vehicle in the lane of vehicle before it has crossed stop line
                 self.stop = vehicles[direction][lane][self.index-1].stop - vehicles[direction][lane][self.index-1].currentImage.get_rect().width - gap         # setting stop coordinate as: stop coordinate of next vehicle - width of next vehicle - gap
@@ -152,6 +158,7 @@ class Vehicle(pygame.sprite.Sprite):
         screen.blit(self.currentImage, (self.x, self.y))
 
     def move(self):
+
         if(self.direction=='right'):
             if(self.crossed==0 and self.x+self.currentImage.get_rect().width>stopLines[self.direction]):   # if the image has crossed stop line now
                 self.crossed = 1
@@ -212,7 +219,7 @@ class Vehicle(pygame.sprite.Sprite):
             if(self.willTurn==1):
                 if(self.crossed==0 or self.x>mid[self.direction]['x']):
                     if((self.x>=self.stop or (currentGreen==2 and currentYellow==0) or self.crossed==1) and (self.index==0 or self.x>(vehicles[self.direction][self.lane][self.index-1].x + vehicles[self.direction][self.lane][self.index-1].currentImage.get_rect().width + gap2) or vehicles[self.direction][self.lane][self.index-1].turned==1)):                
-                        self.x -= self.speed
+                        self.x -= self.speed    
                 else: 
                     if(self.turned==0):
                         self.rotateAngle += rotationAngle
@@ -273,7 +280,7 @@ def initialize():
 def setTime():
     global noOfCars, noOfBikes, noOfBuses, noOfTrucks, noOfRickshaws, noOfLanes
     global carTime, busTime, truckTime, rickshawTime, bikeTime
-    os.system("say detecting vehicles, "+directionNumbers[(currentGreen+1)%noOfSignals])
+    # os.system("say detecting vehicles, "+directionNumbers[(currentGreen+1)%noOfSignals])
 #    detection_result=detection(currentGreen,tfnet)
 #    greenTime = math.ceil(((noOfCars*carTime) + (noOfRickshaws*rickshawTime) + (noOfBuses*busTime) + (noOfBikes*bikeTime))/(noOfLanes+1))
 #    if(greenTime<defaultMinimum):
@@ -379,8 +386,10 @@ def updateValues():
             signals[i].red-=1
 
 # Generating vehicles in the simulation
+
 def generateVehicles():
-    for i in range(0, 20):
+    # for i in range(0, traffic_level):
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -409,6 +418,7 @@ def generateVehicles():
             direction_number = 3
         Vehicle(lane_number, vehicleTypes[vehicle_type], direction_number, directionNumbers[direction_number], will_turn)
         time.sleep(0.75)
+    # return False
 
 def simulationTime():
     global timeElapsed, simTime
@@ -501,8 +511,7 @@ class Main:
             screen.blit(signalTexts[i],signalTimerCoods[i]) 
             displayText = vehicles[directionNumbers[i]]['crossed']
             vehicleCountTexts[i] = font.render(str(displayText), True, black, white)
-            screen.blit(vehicleCountTexts[i],vehicleCountCoods[i])
-
+            screen.blit(vehicleCountTexts[i],vehicleCountCoods[i])            
         timeElapsedText = font.render(("Time Elapsed: "+str(timeElapsed)), True, black, white)
         screen.blit(timeElapsedText,(1100,50))
 
