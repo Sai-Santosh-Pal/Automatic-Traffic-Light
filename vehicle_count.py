@@ -420,27 +420,10 @@ def generateVehicles():
         time.sleep(0.75)
     # return False
 
-def simulationTime():
-    global timeElapsed, simTime
-    while(True):
-        timeElapsed += 1
-        time.sleep(1)
-        if(timeElapsed==simTime):
-            totalVehicles = 0
-            print('Lane-wise Vehicle Counts')
-            for i in range(noOfSignals):
-                print('Lane',i+1,':',vehicles[directionNumbers[i]]['crossed'])
-                totalVehicles += vehicles[directionNumbers[i]]['crossed']
-            print('Total vehicles passed: ',totalVehicles)
-            print('Total time passed: ',timeElapsed)
-            print('No. of vehicles passed per unit time: ',(float(totalVehicles)/float(timeElapsed)))
-            os._exit(1)
+
     
 
 class Main:
-    thread4 = threading.Thread(name="simulationTime",target=simulationTime, args=()) 
-    thread4.daemon = True
-    thread4.start()
 
     thread2 = threading.Thread(name="initialization",target=initialize, args=())    # initialization
     thread2.daemon = True
