@@ -29,7 +29,7 @@ defaultMaximum = 180
 signals = []
 noOfSignals = 4
 simTime = 300       # change this to change time of simulation
-timeElapsed = 0
+timeElapsed 
 
 currentGreen = 0   # Indicates which signal is green
 nextGreen = (currentGreen+1)%noOfSignals
@@ -495,7 +495,7 @@ class Main:
             displayText = vehicles[directionNumbers[i]]['crossed']
             vehicleCountTexts[i] = font.render(str(displayText), True, black, white)
             screen.blit(vehicleCountTexts[i],vehicleCountCoods[i])            
-        timeElapsedText = font.render(("Time Elapsed: "+str(timeElapsed)), True, black, white)
+##        timeElapsedText = font.render(("Time Elapsed: "+str(timeElapsed)), True, black, white)
         screen.blit(timeElapsedText,(1100,50))
 
         # display the vehicles
